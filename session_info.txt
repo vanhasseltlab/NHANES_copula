@@ -1,0 +1,33 @@
+R version 4.1.2 (2021-11-01)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22631)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_Netherlands.1252 
+[2] LC_CTYPE=English_Netherlands.1252   
+[3] LC_MONETARY=English_Netherlands.1252
+[4] LC_NUMERIC=C                        
+[5] LC_TIME=English_Netherlands.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets 
+[6] methods   base     
+
+other attached packages:
+ [1] pracma_2.4.2           sf_1.0-9              
+ [3] ks_1.14.0              tibble_3.2.1          
+ [5] rvinecopulib_0.6.3.1.1 ggside_0.2.3          
+ [7] ggpubr_0.6.0           ggplot2_3.4.4         
+ [9] reshape2_1.4.4         combinat_0.0-8        
+[11] dplyr_1.0.10           tidyr_1.3.0   
+
+$vendor_id
+[1] "GenuineIntel"
+
+$model_name
+[1] "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz"
+
+$no_of_cores
+[1] 8
