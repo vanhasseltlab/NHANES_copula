@@ -1,6 +1,6 @@
 ########################################
 # Subgroup analysis - Sex
-## y.guo@lacdr.leidenuniv.nl - Jan 2024
+## y.guo@lacdr.leidenuniv.nl - April 2024
 ########################################
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##  ~ 0 - Load libraries   ----
@@ -23,9 +23,16 @@ source("functions/calculate_frequency.R")
 load("clean_data/nhanes_data_12d_5r.Rdata") # observation data, original scale
 load("clean_data/sim_Lscale_back.Rdata") # simulation data, original scale
 
-obs_data <- nhanes_data_5r
+load("clean_data/nhanes_data_12d_log.Rdata")
+input_data <- nhanes_data_log
 combi <- permn(1:5) # 120, separate them in 6 files
 i = 19
+input_data[, 2] <- ordered(input_data$Race, levels = combi[[i]])
+levels(input_data$Race)
+input_data[, 1] <- ordered(input_data$Gender, levels = c(1,2))
+levels(input_data$Gender)
+
+obs_data <- nhanes_data_5r
 obs_data[, 2] <- ordered(obs_data$Race, levels = combi[[i]])
 levels(obs_data$Race)
 obs_data[, 1] <- ordered(obs_data$Gender, levels = c(1,2))
@@ -39,13 +46,13 @@ sim_para_log_back$Fat[sim_para_log_back$Age >= 60] <- NA
 
 # dataset for modelling: obs_data
 # info collection
-unique(obs_data$Gender)
+unique(input_data$Gender)
 sim_gender_collection <-list()
 name_gender <- c("Male", "Female")
 
 for (i in 1:2) {
   start_time <- Sys.time()
-  rv <- vine(dat = obs_data[obs_data$Gender == i,] %>% select(-Gender),
+  rv <- vine(dat = input_data[input_data$Gender == i,] %>% select(-Gender),
              margins_controls = list(mult = 1, xmin = NaN, xmax = NaN, bw = NA, deg = 2), # set the xmin to avoid negative values
              copula_controls = list(family_set = "parametric", 
                                     par_method = "mle",
@@ -59,16 +66,26 @@ for (i in 1:2) {
   end_time <- Sys.time()
   cat("time of copula fitting: ", end_time - start_time, "\n") 
   
-  n_sim <- nrow(obs_data[obs_data$Gender == i,])
+  n_sim <- nrow(input_data[input_data$Gender == i,])
   m <- 100
   set.seed(12345)
   sim <- rvine(n_sim*m, rv) %>%
     mutate(simulation_nr = rep(1:m, each = n_sim))
   
-  sim <- sim %>%
+  sim_back <- sim %>% 
+    mutate(Fat = exp(logFat)) %>%
+    mutate(SCR = exp(logSCR)) %>%
+    mutate(ALT = exp(logALT)) %>%
+    mutate(AST = exp(logAST)) %>%
+    mutate(ALP = exp(logALP)) %>%
+    mutate(Albumin = exp(logAlbumin)) %>% 
+    mutate(BR = exp(logBR) - 0.01) %>% 
+    select(-c(logFat,logSCR,logALT,logAST,logALP,logAlbumin,logBR)) 
+  
+  sim_back <- sim_back %>%
     mutate(method = name_gender[i])
   
-  sim_gender_collection[[i]] <- sim
+  sim_gender_collection[[i]] <- sim_back
   
 }
 
