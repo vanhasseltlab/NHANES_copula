@@ -101,33 +101,34 @@ p_combo_cor <- ggplot(statistics_cor) +
   geom_boxplot(aes(y = value, x = covariate), fill = "white", outlier.shape = NA) +
   geom_point(aes(y = observed, x = covariate, color = statistic),size = 1.7, shape = 18, alpha = 0.3) + # 2.2 size for manuscript; 1.7 for poster
   labs(y = "Correlation") +
-  scale_x_discrete() +
+  scale_x_discrete(guide = guide_axis(angle = 90), expand = expansion(mult = c(0.05, 0.05))) +
   scale_color_manual(values = c("#EE9964","white"), limits = force) +
   theme_bw() +
   theme(strip.background = element_rect(fill = "white"), panel.grid.minor.x = element_blank(),
         panel.grid.major.x = element_blank(),legend.position="none",
         strip.text.y = element_text(size=10),
-        axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-        axis.ticks.x = element_blank())
+        axis.text.y = element_text(margin = margin(t = 0, r = 6.7, b = 0, l = 0)))
 p_combo_cor
 load("results/dependency_metrics_olp.Rdata")
+overlap <- overlap %>% 
+  mutate(covariate = gsub("_", " - ", covariate, fixed = TRUE))
 p_combo_olp <- ggplot(overlap) +
   geom_vline(xintercept = seq(0.5, 46, by = 1), color = "grey95") + 
   geom_hline(aes(yintercept = 100), color = "#515151",linetype = "dashed") +
   geom_hline(aes(yintercept = 85), color = "#515151",linetype = "dashed") +
   geom_boxplot(aes(y = value, x = covariate), fill = "white", outlier.shape = NA) +
-  labs(x = "Covariate combinations", y = "Ovarlap (%)") +
+  labs(x = "Covariate pairs", y = "Ovarlap (%)") +
   coord_cartesian(ylim = c(0,100)) +
   scale_x_discrete(guide = guide_axis(angle = 90), expand = expansion(mult = c(0.05, 0.05))) +
   theme_bw() +
   theme(strip.background = element_rect(fill = "white"), panel.grid.minor.x = element_blank(),
         panel.grid.major.x = element_blank(),legend.position="none",
-        strip.text.y = element_text(size=10))
+        strip.text.y = element_text(size=10),
+        axis.text.y = element_text(margin = margin(t = 0, r = 4.5, b = 0, l = 0)))
 p_combo_olp
-# combine plots 
-Figure_3 <- ggarrange(p_combo_cor, p_combo_olp, ncol = 1, nrow = 2,heights=c(3,5),labels = c("A","B"))
-Figure_3
 
-ggsave(Figure_3, file = "figure/figure_3.pdf",width = 6.7, height = 4.5, units = "in") # for manuscript
-ggsave(Figure_3, file = "figure/figure_3.tiff",width = 6.7, height = 4.5, units = "in", dpi = 600) # for manuscript
+# combine plots 
+Figure_3 <- ggarrange(p_combo_cor, p_combo_olp, ncol = 1, nrow = 2,heights=c(5,5),labels = c("A","B"))
+Figure_3
+ggsave(Figure_3, file = "figure/figure_3_tick.tiff",width = 6.7, height = 6, units = "in", dpi = 600) # for manuscript

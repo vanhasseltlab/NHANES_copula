@@ -99,18 +99,21 @@ for(i in 1 : 6){
 p_densityContour <- ggarrange(p[[1]],p[[2]],p[[3]],p[[4]],p[[5]],p[[6]], ncol = 3, nrow = 2)
 p_densityContour 
 # combine the tree and density contours
+
 #### ----
 library(png)
 library(grid)
 library(gridExtra)
-image <- readPNG("results/Picture1.png")
+image <- readPNG("figure/Picture1.png")
 raster_grob <- rasterGrob(image, interpolate = TRUE)
 
-Figure_1 <- ggarrange(raster_grob,p_densityContour, ncol = 2, nrow = 1,widths=c(1.8,3),labels=c("A","B"))
+Figure_1 <- ggarrange(raster_grob,p_densityContour, ncol = 2, nrow = 1,widths=c(1.5,3),labels=c("A","B"),
+                      font.label = list(size = 24))
 Figure_1
 
-ggsave(Figure_1,  file = "figure/figure_1.pdf", width = 12, height = 4.5) 
-ggsave(Figure_1,  file = "figure/figure_1.tiff", width = 12, height = 4.5, dpi = 600) 
+# revision
+ggsave(Figure_1,  file = "results/figure_1.pdf", width = 12, height = 5.5) 
+ggsave(Figure_1,  file = "results/figure_1.tiff", width = 12, height = 4.5, dpi = 600) 
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##  ~ 3 - Marginal comparison - discrete var   ----
